@@ -1,22 +1,21 @@
 # Azure Database Migration Project
 # Summary
-### This is part of the AiCore Course - Cloud Engineer pathway. In this project, project manager would architect and implement a cloud-based database system on Microsoft Azure, showcasing author's hands-on expertise in cloud engineering.
+This is part of the AiCore Course - Cloud Engineer pathway. In this project, project manager would architect and implement a cloud-based database system on Microsoft Azure, showcasing author's hands-on expertise in cloud engineering.
 # Project Prerequisites
-### For this project, different services on Microsoft Azure are used, therefore a login credential which allows to create different resources on Azure is needed. Luckily since this is part of AiCore course, such info is provided.
-### For those who want to try out this process themselves, an Azure account will be required. To sign up for an Azure account, use this link https://azure.microsoft.com/en-us/get-started/azure-portal/ or https://azure.microsoft.com/en-us/free/ for a limited free account.
+For this project, different services on Microsoft Azure are used, therefore a login credential which allows to create different resources on Azure is needed. Luckily since this is part of AiCore course, such info is provided.
+For those who want to try out this process themselves, an Azure account will be required. To sign up for an Azure account, use this link https://azure.microsoft.com/en-us/get-started/azure-portal/ or https://azure.microsoft.com/en-us/free/ for a limited free account.
 # Set up the Production Environment
 ### Task 1 - Set up the Windows Virtual Machine
-#### Window Virtual Machine (VM) can be set up in Azure portal with "Create a resource" button. 
+Window Virtual Machine (VM) can be set up in Azure portal with "Create a resource" button. 
 ### Task 2 - Connect to the Windows Virtual Machine
-#### Connecting to the Windows VM is simple, we first need to download the RDP file from the *Connect* section, then open this RDP file using different clients on different OS.
-#### These include 
+Connecting to the Windows VM is simple, we first need to download the RDP file from the *Connect* section, then open this RDP file using different clients on different OS.
+These include 
 - *Remote Desktop Connection* on Windows OS.
 - *Microsoft Remote Desktop app* on MacOS.
 - Client like *Remmina* for Linux OS.
 ### Task 3 - Install SQL Server and SQL Server Management Studio (SSMS)
 ### Task 4 - Create the Production Database 
-#### The pproduction Database is created by by restoring it from this backup file https://aicore-portal-public-prod-307050600709.s3.eu-west-1.amazonaws.com/project-files/93dd5a0c-212d-48eb-ad51-df521a9b4e9c/AdventureWorks2022.bak
-#### 
+The pproduction Database is created by by restoring it from this backup file https://aicore-portal-public-prod-307050600709.s3.eu-west-1.amazonaws.com/project-files/93dd5a0c-212d-48eb-ad51-df521a9b4e9c/AdventureWorks2022.bak
 
 # Migrate to  Azure SQL Database
 ### Task 1 - Set up Azure SQL Database
@@ -51,3 +50,23 @@ TBCX XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 Database migration validation was carried out with manually compare a couple of top rows on three different tables, all rows checked were ok.
 
 Also Microsoft Visual Studio was used to perform a more comprehensive validation by checking through every row of data on every table migrated and it turns out to be fine, too.
+
+# Data Backup and Restore
+### Task 1 - Backup the On-Premise Database
+The on-premise database is backup using SQL Server Management Studio (SSMS). The process is straightforward, just pick the desired database and select Back Up from Tasks menu. Then followed by making sure type of backup i.e. Full backup or differencial backup, and choose the location to store the backup file and give backup file a meaningful name and start the backup. In this case, our backup file is stored in SSMS's default backup folder.
+
+### Task 2 - Upload Backup to Blob Storage
+In order to use Azure Blob Storage, a Storage Account on Azure is requred. This can be obtained from Azure with Create Resource and select Storage Account. Once Storage Account is available, a storage container is also needed in order to store the backup file.
+
+### Task 3 - Restore Database on Development Environment
+The reason for Development Environment is that developers can run tests on such environment without causing any issue on production environment. Setting up Development Environment is straightforward, it is basically the same as production environment but on another virtual machine.
+
+### Task 4 - Automate Backups for Development Database
+Automate backups provide better data security than manual backups as it take out the human intervention and potential human error.
+With the functionality of SSMS, this can be achieved easily. Functions required in SSMS
+- SQL Server Agent
+- Maintenance Plan under Management group
+- SQL Server Credential - This is done with query window using codes below, where *[YourCredentialName]* is any descriptive name given to the credential, *[Your Azure Storage Account Name]* and *Access Key* both can be found on your Azure Storage Account.
+
+![Alt text](create_credential.png)
+
