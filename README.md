@@ -68,5 +68,22 @@ With the functionality of SSMS, this can be achieved easily. Functions required 
 - Maintenance Plan under Management group
 - SQL Server Credential - This is done with query window using codes below, where *[YourCredentialName]* is any descriptive name given to the credential, *[Your Azure Storage Account Name]* and *Access Key* both can be found on your Azure Storage Account.
 
-![Alt text](create_credential.png)
+![Create Credential](./Readmepic/create_credential.png)
 
+# Disaster Recovery Simulation
+We perform a disaster revovery simulation by intentionally mimicking data loss in production environment.
+### Task 1 - Mimic Data Loss in Production Environment
+In our production database, there is a table named Production.WorkOrder which contains the work order details including OrderQty, StartDate, EndDate and DueDate ect. In this sumulation we will simulate part of this table been deleted deliberately to make the production performance look better.
+
+There are total of 72591 rows of data on this table, 4727 work orders are more than 14 days over due. Someone decided to change EndDate on all these rows to just 12 days overdue so the overall performance may look slightly better. There is 0 row with 12 days overdue in original data.
+
+After updating table, we now have 4727 rows with 12 days overdue.
+
+UPDATE Production.WorkOrder
+SET EndDate = DueDate + 12
+WHERE EndDate - DueDate > 14;
+
+### Task 2 - Restore Database from Azure SQL Database Backup
+Thanks to the backup and Restore capability of Azure SQL Database, it is simple and straightforward to restore damaged database. This is done directly on Azure portal under the said database, just select Restore and pick the time and perform restore. Make sure picked time is just before data lost happened to allow recovery of all lost data while preserving.
+
+After our restore was done, checks were done with Azure Data Studio, and new query result on the restored database shows the same result as original data. Restore test was success.
