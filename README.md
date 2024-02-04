@@ -158,5 +158,3 @@ When we migrate our database to Azure SQL Database, we effectively moved from Ia
 ![Azure Project Diagram](./Readmepic/Azure_Project_Diagram.png)
 
 Chart above shows the project diagram for this particular project. Apart from the original database backup file, every step in the project requires an Azure Subscription. Each block represents a resource used under the project. These include Virtual Machines, Azure SQL Databases include the replication, Storage Account, and Microsoft Entra ID.
-
-# Something went wrong, not uploading to github for some reason.
