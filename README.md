@@ -122,10 +122,19 @@ In this exercise, we have created a Geo Replication of our production SQL databa
 Same as our primary server, our secondary server also uses SQL authentication as the authentication method for SQL login.
 
 ### Test Failover and Failback
-- Data Loss Tolerance
-- Duration Tolerance
+As we have created our geo-replication database, we can now proceed to test failover and failback. Since our database is a dummy one, there is no real time traffic on it, the test was simply done with a push of a button on Azure followed by validating the connectivity to the replication database and data integrity. In a real-world scenario, such test is more complicated and the impacts of such action will have to be addressed before carried out the test. 
 
-TO BE UPDATED XXX MORE details needed to tell how and why failover test is needed and how it is done.
+The goal is to ensure minimum impact to the users and real-time data which can be lost or damaged in term causing financial lost or reputational damage. Below are some important considerations:
+
+- Downtime Window: Perform failover during a scheduled maintenance window or during periods of low user activity.
+
+- Application Awareness: Ensure that applications are designed to handle failover scenarios, and any necessary configuration changes are made to point to the secondary region after the planned failover. In our case, we make sure connections to replication database works properly.
+
+- Data Synchronization: Depending on the duration and data replication lag, there may be some data loss during the failover. We must understand the replication lag and potential data loss implications. In our case, this is almost negligible as no real-time data traffic presented.
+
+- Read-Only Access: The secondary region, after the planned failover, will be in a read-write state. Adjust application behaviour accordingly to avoid unintended write operations.
+
+Same principle applies when the failback is performed.
 
 # Microsoft Entra Directory Integration
 In order to allow a more organised way to manage assesses to our database, I have integrated Microsoft Entra Directory with our Azure SQL database. To do this, I have started by created an admin account that holds the authority to manage and oversee our production database. 
@@ -146,6 +155,6 @@ With the incorporation of virtual machine into our project, we effectively moved
 
 When we migrate our database to Azure SQL Database, we effectively moved from IaaS further to PaaS where we only manage our data and applications, everything else is managed by IT service provider. This can also help in the reduction of the operational cost as well as quickened and simplified development process.
 
-![Azure Project Diagram](./Readmepic/Azure_Project_diagram.png)
+![Azure Project Diagram](./Readmepic/Azure_Project_Diagram.png)
 
 Chart above shows the project diagram for this particular project. Apart from the original database backup file, every step in the project requires an Azure Subscription. Each block represents a resource used under the project. These include Virtual Machines, Azure SQL Databases include the replication, Storage Account, and Microsoft Entra ID.
